@@ -5,6 +5,8 @@
 #
 # Licensed under GPLv2
 
+
+
 ifneq ($(CONFIG_CMA),y)
 obj-y				:= reserve_mem-exynos4.o
 endif
@@ -17,16 +19,22 @@ obj-				:=
 obj-y				+= init.o irq-combiner.o dma.o irq-eint.o ppmu.o
 obj-$(CONFIG_ARM_TRUSTZONE)	+= irq-sgi.o
 obj-$(CONFIG_ARCH_EXYNOS4)	+= exynos4-smc.o cpu-exynos4.o clock-exynos4.o pmu-exynos4.o ppc.o
-
+ifeq ($(CONFIG_NEW_CC),y)
+CFLAGS_exynos4-smc.o :=$(call as-instr,.arch_extension sec,0405,-DREQUIRES_SEC=1)
+else
 CFLAGS_exynos4-smc.o :=$(call as-instr,.arch_extension sec,-DREQUIRES_SEC=1)
+endif
 obj-$(CONFIG_ARCH_EXYNOS5)	+= cpu-exynos5.o clock-exynos5.o pmu-exynos5.o
 
 obj-y				+= clock-domain.o
 obj-$(CONFIG_CPU_EXYNOS4210)	+= clock-exynos4210.o
 obj-$(CONFIG_CPU_EXYNOS4212)	+= clock-exynos4212.o
 obj-$(CONFIG_EXYNOS4_PM)	+= pm-exynos4.o sleep-exynos4.o
+ifeq ($(CONFIG_NEW_CC),y)
+AFLAGS_sleep-exynos4.o :=$(call as-instr,.arch_extension sec,0405,-DREQUIRES_SEC=1)
+else
 AFLAGS_sleep-exynos4.o :=$(call as-instr,.arch_extension sec,-DREQUIRES_SEC=1)
-
+endif
 obj-$(CONFIG_EXYNOS5_PM)	+= pm-exynos5.o sleep-exynos5.o
 obj-$(CONFIG_CPU_FREQ)		+= cpufreq.o
 obj-$(CONFIG_EXYNOS4_CPUFREQ)	+= asv.o asv-4210.o asv-4x12.o
@@ -34,7 +42,11 @@ obj-$(CONFIG_EXYNOS4_CPUFREQ)	+= cpufreq-4210.o cpufreq-4x12.o
 obj-$(CONFIG_EXYNOS5_CPUFREQ)	+= asv.o asv-5250.o
 obj-$(CONFIG_EXYNOS5_CPUFREQ)	+= cpufreq-5250.o
 obj-$(CONFIG_EXYNOS4_CPUIDLE)	+= cpuidle-exynos4.o idle-exynos4.o
+ifeq ($(CONFIG_NEW_CC),y)
+AFLAGS_idle-exynos4.o :=$(call as-instr,.arch_extension sec,0405,-DREQUIRES_SEC=1)
+else
 AFLAGS_idle-exynos4.o :=$(call as-instr,.arch_extension sec,-DREQUIRES_SEC=1)
+endif
 
 obj-$(CONFIG_EXYNOS5_CPUIDLE)	+= cpuidle-exynos5.o idle-exynos5.o
 

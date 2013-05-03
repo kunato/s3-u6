@@ -84,5 +84,9 @@ obj-$(CONFIG_SLP_LOWMEM_NOTIFY)	+= slp_lowmem_notify.o
 obj-$(CONFIG_MACH_M0_CTC)   += cw_tty.o
 
 # Secure OS Mobicore Interface
+ifeq ($(CONFIG_NEW_CC),y)
+CFLAGS_tzic.o :=$(call as-instr,.arch_extension sec,0405,-DREQUIRES_SEC=1)
+else
 CFLAGS_tzic.o :=$(call as-instr,.arch_extension sec,-DREQUIRES_SEC=1)
+endif
 obj-$(CONFIG_MOBICORE_SUPPORT)  += tzic.o
