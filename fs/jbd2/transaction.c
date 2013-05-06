@@ -187,7 +187,7 @@ repeat:
 		}
 		/* end */
 
-		if (!journal->j_running_transaction && !journal->j_barrier_count) {
+		if (!journal->j_running_transaction) {
 			jbd2_get_transaction(journal, new_transaction);
 			new_transaction = NULL;
 		}
